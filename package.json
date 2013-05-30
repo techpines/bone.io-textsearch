@@ -1,0 +1,32 @@
+{
+    "name": "bone.io-textsearch",
+    "version": "0.1.0",
+    "main": "./switch.js",
+    "browser": "./bone.io-textsearch.js",
+    "dependencies": {
+        "async": "*",
+        "connect": "*"
+    },
+   "devDependencies": {
+        "express": "*",
+        "coffee-script": "*",
+        "socket.io": "*",
+        "bone.io": "*",
+        "grunt-contrib-coffee": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-cli":"*",
+        "grunt": "*",
+        "mocha":"*",
+        "chai":"*",
+        "zombie":"*"
+    },
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha test/test.coffee",
+        "build": "./node_modules/grunt-cli/bin/grunt --gruntfile ./grunt.coffee",
+        "dev": "./node_modules/grunt-cli/bin/grunt --gruntfile ./grunt.coffee dev",
+        "compile": "./node_modules/coffee-script/bin/coffee -o compiled/ -c lib/",
+        "prepublish": "echo $(pwd) > /tmp/.pwd; ./node_modules/coffee-script/bin/coffee -o compiled/ -c lib/;",
+        "postpublish": "rm -rf $(cat /tmp/.pwd)/compiled"
+    }
+}
