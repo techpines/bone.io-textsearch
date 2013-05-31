@@ -1,8 +1,14 @@
 
-states = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]
 
 bone.modules.textsearch = (options) ->
-    bone.view '[data-ui="textsearch"]',
+    module = {}
+    module.IO = bone.io 'textsearch',
+        inbound:
+            results: (data, context) ->
+                module.View(context.view.id).render data
+        outbound:
+            shortcuts: ['search']
+    module.View = bone.view '[data-ui="textsearch"]',
         events:
             'focus': 'focus'
             'blur': 'blur'
@@ -13,9 +19,8 @@ bone.modules.textsearch = (options) ->
             menu: '<ul class="typeahead dropdown-menu"></ul>'
             item: '<li><a href="#"></a></li>'
             minLength: 1
+            items: 8
         initialize: ->
-            console.log this
-            console.log 'are we initializing mah boy!!!!!!!!!!!!'
             @options = $.extend {}, @defaults
             @$menu = $(@options.menu)
             @shown = false
@@ -37,8 +42,11 @@ bone.modules.textsearch = (options) ->
                     @next()
 
         lookup: ->
-            @query = @$el.val()
-            return @render(states).show()
+            @lookupData = @query = @$el.val()
+            if @options.lookup?
+                @lookupData = @options.lookup()
+                
+            module.IO.search @lookupData, view: this
 
         keydown: (event) ->
             @suppressKeyPressRepeat = ~$.inArray(event.keyCode, [40,38,9,13,27])
@@ -107,6 +115,8 @@ bone.modules.textsearch = (options) ->
             item.replace new RegExp("(" + query + ")", "ig"), ($1, match) ->
                 "<strong>" + match + "</strong>"
         render: (items) ->
+            items = items.slice 1, @options.items
+            return if items.length < minLength
             that = this
             items = $(items).map (i, item) =>
               i = $(@options.item).attr("data-value", item)
@@ -114,7 +124,7 @@ bone.modules.textsearch = (options) ->
               i[0]
             items.first().addClass "active"
             @$menu.html items
-            return this
+            this.show()
         next: (event) ->
             active = @$menu.find('.active').removeClass 'active'
             next = active.next()
@@ -129,3 +139,4 @@ bone.modules.textsearch = (options) ->
             prev.addClass 'active'
         
             
+    return module
