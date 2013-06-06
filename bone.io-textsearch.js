@@ -1,14 +1,19 @@
 bone.modules.textsearch = function(options) {
   var module;
 
+  if (options == null) {
+    options = {};
+  }
   module = {};
   module.IO = bone.io('textsearch', {
     inbound: {
+      middleware: options.inboundmiddleware,
       results: function(data, context) {
         return module.View(context.view.id).render(data);
       }
     },
     outbound: {
+      middleware: options.outboundMiddleware,
       shortcuts: ['search']
     }
   });

@@ -17,7 +17,6 @@ In the head do this:
 You can pass in the following options:
 
 * `selector` - The selector that designates textsearch boxes.
-* `lookup` - A view action that decides what data to send to the server.
 * `inboundMiddleware` - Inbound bone.io middleware.
 * `outboundMiddleware` - Outbound bone.io middleware.
 

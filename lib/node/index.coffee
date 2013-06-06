@@ -1,5 +1,5 @@
          
-bone = require '../../../bone.io'
+bone = require 'bone.io'
 browserPath = "#{__dirname}/../../bone.io-textsearch.js"
 
 bone.module 'textsearch', browserPath, (options) ->
@@ -7,6 +7,8 @@ bone.module 'textsearch', browserPath, (options) ->
 
     bone.io 'textsearch',
         inbound:
+            middleware: options.inboundMiddleware
             search: search
         outbound:
+            middleware: options.outboundMiddleware
             shortcuts: ['results']

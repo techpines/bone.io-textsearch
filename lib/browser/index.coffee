@@ -1,12 +1,15 @@
 
 
 bone.modules.textsearch = (options) ->
+    options ?= {}
     module = {}
     module.IO = bone.io 'textsearch',
         inbound:
+            middleware: options.inboundmiddleware
             results: (data, context) ->
                 module.View(context.view.id).render data
         outbound:
+            middleware: options.outboundMiddleware
             shortcuts: ['search']
     module.View = bone.view '[data-ui="textsearch"]',
         events:
