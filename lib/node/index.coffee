@@ -1,15 +1,12 @@
          
+bone = require '../../../bone.io'
+browserPath = "#{__dirname}/../../bone.io-textsearch.js"
 
-bone = require 'bone.io'
-
-console.log 'heyho'
-bone.modules.textsearch = (options) ->
-    server = options.server
+bone.module 'textsearch', browserPath, (options) ->
     search = options.search
 
-    bone.io 'typeahead',
+    bone.io 'textsearch',
         inbound:
             search: search
-        outbound: ['results']
-
-
+        outbound:
+            shortcuts: ['results']

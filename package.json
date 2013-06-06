@@ -3,23 +3,11 @@
     "version": "0.1.0",
     "main": "./switch.js",
     "browser": "./bone.io-textsearch.js",
-    "dependencies": {
-        "async": "*",
-        "connect": "*"
-    },
-   "devDependencies": {
-        "express": "*",
+    "devDependencies": {
         "coffee-script": "*",
-        "socket.io": "*",
         "bone.io": "*",
-        "grunt-contrib-coffee": "*",
-        "grunt-contrib-uglify": "*",
-        "grunt-contrib-watch": "*",
-        "grunt-cli":"*",
-        "grunt": "*",
-        "mocha":"*",
-        "chai":"*",
-        "zombie":"*"
+        "socket.io": "*",
+        "express": "*"
     },
     "scripts": {
         "test": "./node_modules/mocha/bin/mocha test/test.coffee",

@@ -5,21 +5,33 @@ Get that nice "Google" style search, without the billion dollar investment.
 
 ## In the browser
 
+In the head do this:
+
+```html
+<script src="/bone.io-textsearch.js"></script>
+<script>
+  bone.modules.TextSearch = bone.modules.textsearch(options)
+</script>
 ```
+
+You can pass in the following options:
+
+* `selector` - The selector that designates textsearch boxes.
+* `lookup` - A view action that decides what data to send to the server.
+* `inboundMiddleware` - Inbound bone.io middleware.
+* `outboundMiddleware` - Outbound bone.io middleware.
+
+
+Then create as many textsearch boxes as you want in your html like this:
+
+```html
+<input type="text", data-ui="textsearch" />
 ```
 
 ## In node
 
-```
-// Setup the server
-var app = require('express')();
-    server = require('http').createServer();
-    io = require('socket.io').listen(server);
-
-// Configure bone.io
-var bone = require('bone.io');
+```js
 require('bone.io-textsearch');
-bone.io.set('config', {server: io});
 
 // Rockout with your cock out
 bone.modules.textsearch(options);

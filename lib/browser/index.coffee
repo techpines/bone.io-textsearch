@@ -105,8 +105,9 @@ bone.modules.textsearch = (options) ->
             @shown = true
             return this
         select: ->
-            val = @$menu.find('active').attr('data-value')
+            val = @$menu.find('.active').attr('data-value')
             @$el.val(val).change()
+            @hide()
         hide: ->
             @$menu.hide()
             @shown = false
@@ -115,8 +116,7 @@ bone.modules.textsearch = (options) ->
             item.replace new RegExp("(" + query + ")", "ig"), ($1, match) ->
                 "<strong>" + match + "</strong>"
         render: (items) ->
-            items = items.slice 1, @options.items
-            return if items.length < minLength
+            items = items.slice 0, @options.items
             that = this
             items = $(items).map (i, item) =>
               i = $(@options.item).attr("data-value", item)
@@ -138,5 +138,4 @@ bone.modules.textsearch = (options) ->
                 prev = @$menu.find('li').last()
             prev.addClass 'active'
         
-            
     return module

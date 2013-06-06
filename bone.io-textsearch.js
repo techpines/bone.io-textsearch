@@ -1,9 +1,18 @@
-var states;
-
-states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Dakota", "North Carolina", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
-
 bone.modules.textsearch = function(options) {
-  return bone.view('[data-ui="textsearch"]', {
+  var module;
+
+  module = {};
+  module.IO = bone.io('textsearch', {
+    inbound: {
+      results: function(data, context) {
+        return module.View(context.view.id).render(data);
+      }
+    },
+    outbound: {
+      shortcuts: ['search']
+    }
+  });
+  module.View = bone.view('[data-ui="textsearch"]', {
     events: {
       'focus': 'focus',
       'blur': 'blur',
@@ -14,11 +23,10 @@ bone.modules.textsearch = function(options) {
     defaults: {
       menu: '<ul class="typeahead dropdown-menu"></ul>',
       item: '<li><a href="#"></a></li>',
-      minLength: 1
+      minLength: 1,
+      items: 8
     },
     initialize: function() {
-      console.log(this);
-      console.log('are we initializing mah boy!!!!!!!!!!!!');
       this.options = $.extend({}, this.defaults);
       this.$menu = $(this.options.menu);
       this.shown = false;
@@ -42,8 +50,13 @@ bone.modules.textsearch = function(options) {
       }
     },
     lookup: function() {
-      this.query = this.$el.val();
-      return this.render(states).show();
+      this.lookupData = this.query = this.$el.val();
+      if (this.options.lookup != null) {
+        this.lookupData = this.options.lookup();
+      }
+      return module.IO.search(this.lookupData, {
+        view: this
+      });
     },
     keydown: function(event) {
       this.suppressKeyPressRepeat = ~$.inArray(event.keyCode, [40, 38, 9, 13, 27]);
@@ -123,8 +136,9 @@ bone.modules.textsearch = function(options) {
     select: function() {
       var val;
 
-      val = this.$menu.find('active').attr('data-value');
-      return this.$el.val(val).change();
+      val = this.$menu.find('.active').attr('data-value');
+      this.$el.val(val).change();
+      return this.hide();
     },
     hide: function() {
       this.$menu.hide();
@@ -142,6 +156,7 @@ bone.modules.textsearch = function(options) {
       var that,
         _this = this;
 
+      items = items.slice(0, this.options.items);
       that = this;
       items = $(items).map(function(i, item) {
         i = $(_this.options.item).attr("data-value", item);
@@ -150,7 +165,7 @@ bone.modules.textsearch = function(options) {
       });
       items.first().addClass("active");
       this.$menu.html(items);
-      return this;
+      return this.show();
     },
     next: function(event) {
       var active, next;
@@ -173,4 +188,5 @@ bone.modules.textsearch = function(options) {
       return prev.addClass('active');
     }
   });
+  return module;
 };
